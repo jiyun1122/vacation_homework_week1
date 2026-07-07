@@ -1,7 +1,8 @@
 package mutsa_vacation_week1.demo.menu;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import mutsa_vacation_week1.demo.global.exception.CustomException;
+import mutsa_vacation_week1.demo.global.exception.ErrorCode;
 import mutsa_vacation_week1.demo.menu.dto.MenuDetailResponse;
 import mutsa_vacation_week1.demo.menu.dto.MenuListResponse;
 import mutsa_vacation_week1.demo.menu.dto.MenuSummaryResponse;
@@ -38,7 +39,7 @@ public class MenuService {
 
     public MenuDetailResponse getMenuDetail(Long menuId) {
         Menu menu = menuRepository.findById(menuId)
-                .orElseThrow(() -> new EntityNotFoundException("메뉴를 찾을 수 없습니다. id=" + menuId));
+                .orElseThrow(() -> new CustomException(ErrorCode.MENU_NOT_FOUND));
 
         List<MenuOptionResponse> menuOptions = menu.getMenuOptions().stream()
                 .map(MenuOptionResponse::from)

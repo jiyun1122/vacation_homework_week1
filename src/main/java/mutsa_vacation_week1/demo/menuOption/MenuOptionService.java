@@ -1,7 +1,8 @@
 package mutsa_vacation_week1.demo.menuOption;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import mutsa_vacation_week1.demo.global.exception.CustomException;
+import mutsa_vacation_week1.demo.global.exception.ErrorCode;
 import mutsa_vacation_week1.demo.menu.Menu;
 import mutsa_vacation_week1.demo.menu.MenuRepository;
 import mutsa_vacation_week1.demo.menuOption.dto.MenuOptionCreateRequest;
@@ -22,7 +23,7 @@ public class MenuOptionService {
     @Transactional
     public MenuOptionResponse createOption(Long menuId, MenuOptionCreateRequest request) {
         Menu menu = menuRepository.findById(menuId)
-                .orElseThrow(() -> new EntityNotFoundException("메뉴를 찾을 수 없습니다. id=" + menuId));
+                .orElseThrow(() -> new CustomException(ErrorCode.MENU_NOT_FOUND));
 
         MenuOption menuOption = MenuOption.builder()
                 .menu(menu)
@@ -39,7 +40,7 @@ public class MenuOptionService {
     @Transactional
     public MenuOptionResponse updateOption(Long menuOptionId, MenuOptionUpdateRequest request) {
         MenuOption menuOption = menuOptionRepository.findById(menuOptionId)
-                .orElseThrow(() -> new EntityNotFoundException("옵션을 찾을 수 없습니다. id=" + menuOptionId));
+                .orElseThrow(() -> new CustomException(ErrorCode.MENU_OPTION_NOT_FOUND));
 
         menuOption.update(request.content(), request.price());
 
@@ -49,7 +50,7 @@ public class MenuOptionService {
     @Transactional
     public MenuOptionDeleteResponse deleteOption(Long menuOptionId) {
         MenuOption menuOption = menuOptionRepository.findById(menuOptionId)
-                .orElseThrow(() -> new EntityNotFoundException("옵션을 찾을 수 없습니다. id=" + menuOptionId));
+                .orElseThrow(() -> new CustomException(ErrorCode.MENU_OPTION_NOT_FOUND));
 
         menuOptionRepository.delete(menuOption);
 
