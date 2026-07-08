@@ -3,18 +3,20 @@ package mutsa_vacation_week1.demo.cart.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import mutsa_vacation_week1.demo.cart.domain.Cart;
-import mutsa_vacation_week1.demo.cart.domain.CartItem;
-import mutsa_vacation_week1.demo.cart.domain.CartItemOption;
+import mutsa_vacation_week1.demo.cart.entity.Cart;
+import mutsa_vacation_week1.demo.cart.entity.CartItem;
+import mutsa_vacation_week1.demo.cart.entity.CartItemOption;
 import mutsa_vacation_week1.demo.cart.dto.request.CartItemAddRequest;
 import mutsa_vacation_week1.demo.cart.dto.request.CartItemUpdateRequest;
 import mutsa_vacation_week1.demo.cart.dto.response.CartItemResponse;
 import mutsa_vacation_week1.demo.cart.dto.response.CartResponse;
 import mutsa_vacation_week1.demo.cart.repository.CartItemRepository;
 import mutsa_vacation_week1.demo.cart.repository.CartRepository;
+import mutsa_vacation_week1.demo.menu.entity.Menu;
+import mutsa_vacation_week1.demo.menu.repository.MenuRepository;
+import mutsa_vacation_week1.demo.menuOption.entity.MenuOption;
+import mutsa_vacation_week1.demo.menuOption.repository.MenuOptionRepository;
 import org.springframework.stereotype.Service;
-
-import java.awt.*;
 
 
 @Service

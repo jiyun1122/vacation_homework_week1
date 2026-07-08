@@ -1,13 +1,19 @@
 package mutsa_vacation_week1.demo.member.service;
 
 import lombok.RequiredArgsConstructor;
-import mutsa_vacation_week1.demo.member.dto.*;
+import mutsa_vacation_week1.demo.cart.entity.Cart;
+import mutsa_vacation_week1.demo.cart.repository.CartRepository;
+import mutsa_vacation_week1.demo.member.dto.request.LoginRequest;
+import mutsa_vacation_week1.demo.member.dto.request.SignupRequest;
+import mutsa_vacation_week1.demo.member.dto.response.CreditChargeResponse;
+import mutsa_vacation_week1.demo.member.dto.response.CreditResponse;
+import mutsa_vacation_week1.demo.member.dto.response.MemberInfo;
 import mutsa_vacation_week1.demo.member.entity.Member;
 import mutsa_vacation_week1.demo.member.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import mutsa_vacation_week1.demo.global.exception.CustomException;
-import mutsa_vacation_week1.demo.global.exception.ErrorCode;
+import mutsa_vacation_week1.demo.global.apiPayload.exception.CustomException;
+import mutsa_vacation_week1.demo.global.apiPayload.code.MemberErrorCode;
 
 
 @Service
@@ -21,7 +27,7 @@ public class MemberService {
     public MemberInfo signup(SignupRequest request) {
 
         if (memberRepository.findByLoginId(request.getLoginId()).isPresent()) {
-            throw new CustomException(ErrorCode.MEMBER_ALREADY_EXISTS);
+            throw new CustomException(MemberErrorCode.MEMBER_ALREADY_EXISTS);
         }
 
         Member member = new Member(
@@ -33,7 +39,7 @@ public class MemberService {
 
         Member savedMember = memberRepository.save(member);
 
-        Cart cart = new Cart(savedMember);
+        Cart cart = new Cart(savedMember.getId());
         cartRepository.save(cart);
 
         return new MemberInfo(
@@ -49,10 +55,10 @@ public class MemberService {
     public MemberInfo login(LoginRequest request) {
 
         Member member = memberRepository.findByLoginId(request.getLoginId())
-                .orElseThrow(() -> new CustomException(ErrorCode.LOGIN_FAILED));
+                .orElseThrow(() -> new CustomException(MemberErrorCode.LOGIN_FAILED));
 
         if (!member.getPassword().equals(request.getPassword())) {
-            throw new CustomException(ErrorCode.LOGIN_FAILED);
+            throw new CustomException(MemberErrorCode.LOGIN_FAILED);
         }
 
         return new MemberInfo(
@@ -95,7 +101,7 @@ public class MemberService {
 
     private Member findMemberById(Long memberId) {
         return memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+                .orElseThrow(() -> new CustomException(MemberErrorCode.MEMBER_NOT_FOUND));
     }
 
 }

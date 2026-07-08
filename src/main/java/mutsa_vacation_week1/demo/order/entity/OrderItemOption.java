@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import mutsa_vacation_week1.demo.menuOption.entity.MenuOption;
 
 @Entity
 @Getter

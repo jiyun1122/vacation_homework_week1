@@ -3,7 +3,7 @@ package mutsa_vacation_week1.demo.cart.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;
-import mutsa_vacation_week1.demo.cart.domain.CartItemOption;
+import mutsa_vacation_week1.demo.cart.entity.CartItemOption;
 
 @Getter
 @Builder

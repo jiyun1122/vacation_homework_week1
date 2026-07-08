@@ -1,10 +1,19 @@
 package mutsa_vacation_week1.demo.order.service;
 
 import lombok.RequiredArgsConstructor;
+import mutsa_vacation_week1.demo.cart.entity.CartItem;
+import mutsa_vacation_week1.demo.cart.entity.CartItemOption;
+import mutsa_vacation_week1.demo.cart.repository.CartItemRepository;
 import mutsa_vacation_week1.demo.global.apiPayload.exception.CustomException;
-import mutsa_vacation_week1.demo.global.apiPayload.exception.OrderErrorCode;
+import mutsa_vacation_week1.demo.global.apiPayload.code.OrderErrorCode;
 import mutsa_vacation_week1.demo.member.entity.Member;
-import mutsa_vacation_week1.demo.order.dto.*;
+import mutsa_vacation_week1.demo.menu.entity.Menu;
+import mutsa_vacation_week1.demo.order.dto.request.OrderRequest;
+import mutsa_vacation_week1.demo.order.dto.response.OrderCancelResponse;
+import mutsa_vacation_week1.demo.order.dto.response.OrderItemInfo;
+import mutsa_vacation_week1.demo.order.dto.response.OrderOptionInfo;
+import mutsa_vacation_week1.demo.order.dto.response.OrderResponse;
+import mutsa_vacation_week1.demo.order.dto.response.OrderStoreGroup;
 import mutsa_vacation_week1.demo.order.entity.Order;
 import mutsa_vacation_week1.demo.order.entity.OrderItem;
 import mutsa_vacation_week1.demo.order.entity.OrderItemOption;
@@ -15,7 +24,6 @@ import mutsa_vacation_week1.demo.order.repository.OrderRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -86,7 +94,7 @@ public class OrderService {
         int total = 0;
         for (CartItem cartItem : cartItems) {
             int menuPrice = cartItem.getMenu().getPrice();
-            int optionPrice = cartItem.getCartItemOptions().stream()
+            int optionPrice = cartItem.getOptions().stream()
                     .mapToInt(option -> option.getMenuOption().getPrice())
                     .sum();
             total += (menuPrice + optionPrice) * cartItem.getQuantity();
@@ -107,7 +115,7 @@ public class OrderService {
         );
         OrderItem savedOrderItem = orderItemRepository.save(orderItem);
 
-        for (CartItemOption cartItemOption : cartItem.getCartItemOptions()) {
+        for (CartItemOption cartItemOption : cartItem.getOptions()) {
             OrderItemOption orderItemOption = new OrderItemOption(
                     savedOrderItem,
                     cartItemOption.getMenuOption(),
@@ -122,13 +130,13 @@ public class OrderService {
     private List<OrderStoreGroup> groupByStore(List<OrderItem> orderItems) {
 
         Map<Long, List<OrderItem>> groupedByStoreId = orderItems.stream()
-                .collect(Collectors.groupingBy(oi -> oi.getMenu().getStore().getId()));
+                .collect(Collectors.groupingBy(oi -> oi.getMenu().getStoreId()));
 
         List<OrderStoreGroup> result = new ArrayList<>();
 
         for (Map.Entry<Long, List<OrderItem>> entry : groupedByStoreId.entrySet()) {
             List<OrderItem> items = entry.getValue();
-            String storeName = items.get(0).getMenu().getStore().getName();
+            String storeName = items.get(0).getMenu().getStoreName();
 
             List<OrderItemInfo> itemInfos = items.stream()
                     .map(this::toOrderItemInfo)
