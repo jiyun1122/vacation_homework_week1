@@ -1,5 +1,6 @@
 package mutsa_vacation_week1.demo.member.controller;
 
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -15,6 +16,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.GetMapping;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -23,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberController {
 
     private final MemberService memberService;
+  
 
     @Operation(summary = "회원가입", description = "아이디, 비밀번호, 이름을 입력받아 회원을 등록합니다.")
     @ApiResponses(value = {
@@ -69,6 +74,23 @@ public class MemberController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(ApiResponse.onSuccess("로그아웃 성공", null));
+    }
+    
+     // 크레딧 충전
+    @PostMapping("/credit/charge")
+    public ResponseEntity<CreditChargeResponse> chargeCredit(
+            @RequestParam Long memberId,
+            @RequestBody CreditChargeRequest request) {
+
+        CreditChargeResponse response = memberService.chargeCredit(memberId, request.getAmount());
+        return ResponseEntity.ok(response);
+    }
+
+    // 크레딧 조회
+    @GetMapping("/credit")
+    public ResponseEntity<CreditResponse> getCredit(@RequestParam Long memberId) {
+        CreditResponse response = memberService.getCredit(memberId);
+        return ResponseEntity.ok(response);
     }
 
 }
