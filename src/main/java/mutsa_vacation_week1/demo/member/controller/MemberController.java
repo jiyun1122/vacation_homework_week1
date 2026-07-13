@@ -8,20 +8,22 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import mutsa_vacation_week1.demo.global.apiPayload.ApiResponse;
+import mutsa_vacation_week1.demo.global.security.AuthMember;
 import mutsa_vacation_week1.demo.member.dto.request.LoginRequest;
 import mutsa_vacation_week1.demo.member.dto.request.SignupRequest;
 import mutsa_vacation_week1.demo.member.dto.request.CreditChargeRequest;
 import mutsa_vacation_week1.demo.member.dto.response.CreditChargeResponse;
 import mutsa_vacation_week1.demo.member.dto.response.CreditResponse;
+import mutsa_vacation_week1.demo.member.dto.response.LoginResponse;
 import mutsa_vacation_week1.demo.member.dto.response.MemberInfo;
 import mutsa_vacation_week1.demo.member.service.MemberService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.GetMapping;
 
 
@@ -65,8 +67,8 @@ public class MemberController {
                     content = @Content(mediaType = "application/json"))
     })
     @PostMapping("/auth/login")
-    public ResponseEntity<ApiResponse<MemberInfo>> login(@Valid @RequestBody LoginRequest request) {
-        MemberInfo result = memberService.login(request);
+    public ResponseEntity<ApiResponse<LoginResponse>> login(@Valid @RequestBody LoginRequest request) {
+        LoginResponse result = memberService.login(request);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(ApiResponse.onSuccess("로그인 성공", result));
@@ -80,21 +82,30 @@ public class MemberController {
                 .status(HttpStatus.OK)
                 .body(ApiResponse.onSuccess("로그아웃 성공", null));
     }
-    
+
+    @Operation(summary = "내 정보 조회", description = "인증된 사용자의 정보를 조회합니다.")
+    @GetMapping("/me")
+    public ResponseEntity<ApiResponse<MemberInfo>> getMyInfo(@AuthenticationPrincipal AuthMember authMember) {
+        MemberInfo result = memberService.getMyInfo(authMember.memberId());
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ApiResponse.onSuccess("내 정보 조회 성공", result));
+    }
+
      // 크레딧 충전
     @PostMapping("/credit/charge")
     public ResponseEntity<CreditChargeResponse> chargeCredit(
-            @RequestParam Long memberId,
+            @AuthenticationPrincipal AuthMember authMember,
             @RequestBody CreditChargeRequest request) {
 
-        CreditChargeResponse response = memberService.chargeCredit(memberId, request.getAmount());
+        CreditChargeResponse response = memberService.chargeCredit(authMember.memberId(), request.getAmount());
         return ResponseEntity.ok(response);
     }
 
     // 크레딧 조회
     @GetMapping("/credit")
-    public ResponseEntity<CreditResponse> getCredit(@RequestParam Long memberId) {
-        CreditResponse response = memberService.getCredit(memberId);
+    public ResponseEntity<CreditResponse> getCredit(@AuthenticationPrincipal AuthMember authMember) {
+        CreditResponse response = memberService.getCredit(authMember.memberId());
         return ResponseEntity.ok(response);
     }
 
