@@ -19,7 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 /**
  * JWT 기반 stateless 인증을 위한 Spring Security 설정.
  *
- * 회원가입/로그인만 공개 API로 명시하고, Member 도메인의 나머지 API(내 정보, 크레딧, 로그아웃)와
+ * 로그인만 공개 API로 명시하고, Member 도메인의 나머지 API(내 정보, 크레딧, 로그아웃)와
  * Cart 도메인 전체는 인증을 요구한다. Order/Menu 등 나머지 도메인은 이번 작업 범위가 아니므로
  * 기존처럼 공개 접근을 유지한다.
  */
@@ -45,7 +45,6 @@ public class SecurityConfig {
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(new JwtAuthenticationEntryPoint()))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/members").permitAll()
                         .requestMatchers(HttpMethod.POST, "/members/auth/login").permitAll()
                         .requestMatchers("/members/**").authenticated()
                         .requestMatchers("/api/v1/members/me/**").authenticated()
