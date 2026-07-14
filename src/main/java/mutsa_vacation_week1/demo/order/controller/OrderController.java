@@ -45,10 +45,8 @@ public class OrderController {
             @RequestParam Long memberId,
             @Valid @RequestBody OrderRequest request
     ) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new CustomException(MemberErrorCode.MEMBER_NOT_FOUND));
 
-        OrderResponse result = orderService.createOrder(member, request);
+        OrderResponse result = orderService.createOrder(memberId, request);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
