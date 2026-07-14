@@ -1,5 +1,6 @@
 package mutsa_vacation_week1.demo.menuOption.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -26,6 +27,7 @@ public class MenuOption {
     @JoinColumn(name = "menu_id")
     private Menu menu;
 
+    @Column(name = "option_value")
     private String option;
 
     private String content;

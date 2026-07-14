@@ -26,6 +26,7 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
         AuthErrorCode errorCode = AuthErrorCode.ACCESS_DENIED;
 
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setCharacterEncoding("UTF-8");
         response.setStatus(errorCode.getHttpStatus().value());
 
         ApiResponse<Void> body = ApiResponse.onFailure(errorCode.getMessage());
