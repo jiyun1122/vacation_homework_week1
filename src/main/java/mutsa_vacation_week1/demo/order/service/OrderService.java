@@ -4,9 +4,11 @@ import lombok.RequiredArgsConstructor;
 import mutsa_vacation_week1.demo.cart.entity.CartItem;
 import mutsa_vacation_week1.demo.cart.entity.CartItemOption;
 import mutsa_vacation_week1.demo.cart.repository.CartItemRepository;
+import mutsa_vacation_week1.demo.global.apiPayload.code.MemberErrorCode;
 import mutsa_vacation_week1.demo.global.apiPayload.exception.CustomException;
 import mutsa_vacation_week1.demo.global.apiPayload.code.OrderErrorCode;
 import mutsa_vacation_week1.demo.member.entity.Member;
+import mutsa_vacation_week1.demo.member.repository.MemberRepository;
 import mutsa_vacation_week1.demo.menu.entity.Menu;
 import mutsa_vacation_week1.demo.order.dto.request.OrderRequest;
 import mutsa_vacation_week1.demo.order.dto.response.OrderCancelResponse;
@@ -37,9 +39,13 @@ public class OrderService {
     private final OrderItemRepository orderItemRepository;
     private final OrderItemOptionRepository orderItemOptionRepository;
     private final CartItemRepository cartItemRepository;
+    private final MemberRepository memberRepository;
 
     @Transactional
-    public OrderResponse createOrder(Member member, OrderRequest request) {
+    public OrderResponse createOrder(Long memberId, OrderRequest request) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(MemberErrorCode.MEMBER_NOT_FOUND));
+
         List<CartItem> cartItems = request.getCartItemIds().stream()
                 .map(id -> cartItemRepository.findById(id)
                         .orElseThrow(() -> new CustomException(OrderErrorCode.CART_ITEM_ID_NOT_FOUND)))
