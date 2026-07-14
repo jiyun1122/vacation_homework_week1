@@ -1,0 +1,4 @@
+# application.yml
+jwt:
+  secret: ${JWT_SECRET}          # 환경변수로 관리, 절대 커밋 X
+  access-token-expiration: 3600000  # 1시간

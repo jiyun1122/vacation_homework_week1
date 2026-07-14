@@ -6,10 +6,9 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @AllArgsConstructor
-public enum MemberErrorCode implements BaseErrorCode {
+public enum CartErrorCode implements BaseErrorCode {
 
-    LOGIN_FAILED(HttpStatus.UNAUTHORIZED, "MEMBER401_1", "아이디 또는 비밀번호가 일치하지 않습니다."),
-    MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMBER404_1", "존재하지 않는 회원입니다");
+    CART_ACCESS_DENIED(HttpStatus.FORBIDDEN, "CART403_1", "본인의 장바구니만 접근할 수 있습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
