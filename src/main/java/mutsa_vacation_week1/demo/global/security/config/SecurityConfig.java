@@ -49,6 +49,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // 반드시 최상단 근처에 추가, 이 부분이 누락되었었음
                         .requestMatchers(HttpMethod.POST, "/members").permitAll()
                         .requestMatchers(HttpMethod.POST, "/members/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/menu", "/menu/**").permitAll()
                         .requestMatchers("/api/credit/**").authenticated()
                         .requestMatchers("/api/orders/**").authenticated()
                         .requestMatchers("/api/cart/**").authenticated()
