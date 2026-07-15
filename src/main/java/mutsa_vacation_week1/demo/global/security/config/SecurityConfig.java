@@ -26,7 +26,6 @@ import java.util.List;
 JwtAuthenticationFilter:jwt 토큰이 유효한지 검사
 jwtAuthenticationEntryPoint: 인증되지 않은 사용자가 보호된 리소스에 접근할 때 401 오류 처리를 하도록 함
 wtAccessDeniedHandler: 인증되었지만 권한이 없는 사용자의 경우 403 오류 처리를 하도록 함
-
  */
 @Configuration
 @EnableWebSecurity
@@ -50,6 +49,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/members").permitAll()
                         .requestMatchers(HttpMethod.POST, "/members/auth/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/menu", "/menu/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/stores", "/stores/**").permitAll()
                         .requestMatchers("/api/credit/**").authenticated()
                         .requestMatchers("/api/orders/**").authenticated()
                         .requestMatchers("/api/cart/**").authenticated()
@@ -87,3 +87,5 @@ public class SecurityConfig {
     }
 }
 
+/* 이건 커밋을 위한 커밋이다
+ */
