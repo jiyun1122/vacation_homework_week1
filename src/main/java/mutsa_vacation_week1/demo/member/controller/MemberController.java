@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import mutsa_vacation_week1.demo.global.apiPayload.ApiResponse;
 import mutsa_vacation_week1.demo.global.security.AuthMember;
 import mutsa_vacation_week1.demo.member.dto.request.LoginRequest;
+import mutsa_vacation_week1.demo.member.dto.request.SignupRequest;
 import mutsa_vacation_week1.demo.member.dto.request.CreditChargeRequest;
 import mutsa_vacation_week1.demo.member.dto.response.CreditChargeResponse;
 import mutsa_vacation_week1.demo.member.dto.response.CreditResponse;
@@ -27,11 +28,29 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "Members", description = "로그인, 로그아웃")
+@Tag(name = "Members", description = "회원가입, 로그인, 로그아웃")
 public class MemberController {
 
     private final MemberService memberService;
-  
+
+    @Operation(summary = "회원가입", description = "아이디, 비밀번호, 이름을 입력받아 회원을 등록합니다.")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "201",
+                    description = "회원가입 성공",
+                    content = @Content(mediaType = "application/json")),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "409",
+                    description = "MEMBER409_1 - 이미 존재하는 loginId 입니다",
+                    content = @Content(mediaType = "application/json"))
+    })
+    @PostMapping("/members")
+    public ResponseEntity<ApiResponse<MemberInfo>> signup(@Valid @RequestBody SignupRequest request) {
+        MemberInfo result = memberService.signup(request);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(ApiResponse.onSuccess("회원가입 성공", result));
+    }
 
     @Operation(summary = "로그인", description = "아이디, 비밀번호로 로그인합니다.")
     @ApiResponses(value = {
