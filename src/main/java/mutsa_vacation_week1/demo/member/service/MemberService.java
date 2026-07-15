@@ -1,7 +1,10 @@
 package mutsa_vacation_week1.demo.member.service;
 
 import lombok.RequiredArgsConstructor;
+import mutsa_vacation_week1.demo.cart.entity.Cart;
+import mutsa_vacation_week1.demo.cart.repository.CartRepository;
 import mutsa_vacation_week1.demo.member.dto.request.LoginRequest;
+import mutsa_vacation_week1.demo.member.dto.request.SignupRequest;
 import mutsa_vacation_week1.demo.member.dto.response.CreditChargeResponse;
 import mutsa_vacation_week1.demo.member.dto.response.CreditResponse;
 import mutsa_vacation_week1.demo.member.dto.response.LoginResponse;
@@ -21,8 +24,36 @@ import mutsa_vacation_week1.demo.global.apiPayload.code.MemberErrorCode;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final CartRepository cartRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+
+    @Transactional
+    public MemberInfo signup(SignupRequest request) {
+
+        if (memberRepository.findByLoginId(request.getLoginId()).isPresent()) {
+            throw new CustomException(MemberErrorCode.MEMBER_ALREADY_EXISTS);
+        }
+
+        Member member = new Member(
+                request.getLoginId(),
+                passwordEncoder.encode(request.getPassword()),
+                request.getName(),
+                0
+        );
+
+        Member savedMember = memberRepository.save(member);
+
+        Cart cart = new Cart(savedMember.getId());
+        cartRepository.save(cart);
+
+        return new MemberInfo(
+                savedMember.getId(),
+                savedMember.getLoginId(),
+                savedMember.getName(),
+                savedMember.getCredit()
+        );
+    }
 
     @Transactional(readOnly = true)
     public LoginResponse login(LoginRequest request) {
