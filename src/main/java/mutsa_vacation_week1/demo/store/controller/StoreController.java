@@ -1,25 +1,22 @@
 package mutsa_vacation_week1.demo.store.controller;
 
 import lombok.RequiredArgsConstructor;
+import mutsa_vacation_week1.demo.global.apiPayload.ApiResponse;
 import mutsa_vacation_week1.demo.store.dto.response.StoreListResponse;
-import mutsa_vacation_week1.demo.store.dto.response.StoreSummaryResponse;
-import mutsa_vacation_week1.demo.store.entity.Store;
-import mutsa_vacation_week1.demo.store.repository.StoreRepository;
-import org.springframework.stereotype.Service;
+import mutsa_vacation_week1.demo.store.service.StoreService;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
-@Service
+@RestController
+@RequestMapping("/stores")
 @RequiredArgsConstructor
-public class StoreService {
+public class StoreController {
 
-    private final StoreRepository storeRepository;
+    private final StoreService storeService;
 
-    public StoreListResponse getStoreList() {
-        List<StoreSummaryResponse> stores = storeRepository.findAll().stream()
-                .map(StoreSummaryResponse::from)
-                .toList();
-
-        return new StoreListResponse(stores);
+    @GetMapping
+    public ApiResponse<StoreListResponse> getStoreList() {
+        return ApiResponse.onSuccess("가게 목록 조회 성공", storeService.getStoreList());
     }
 }

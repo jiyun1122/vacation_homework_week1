@@ -1,4 +1,4 @@
-package mutsa_vacation_week1.demo.store.dto;
+package mutsa_vacation_week1.demo.store.dto.response;
 
 import mutsa_vacation_week1.demo.store.entity.Store;
 
