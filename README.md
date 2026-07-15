@@ -40,13 +40,12 @@
 <br>
 
 ## 📂 3. 프로젝트 폴더 구조 (Project Structure)
+<pre><code>
 mutsa_vacation_week1/demo
-│
-├── DemoApplication.java                    # 스프링부트 시작점
-│
-├── global/                                 # 공통/전역 설정
+├── DemoApplication.java # 스프링부트 시작점
+├── global/ # 공통/전역 설정
 │   ├── apiPayload/
-│   │   ├── ApiResponse.java                # 공통 응답 포맷
+│   │   ├── ApiResponse.java # 공통 응답 포맷
 │   │   ├── code/
 │   │   │   ├── BaseErrorCode.java
 │   │   │   ├── CommonErrorCode.java
@@ -59,65 +58,57 @@ mutsa_vacation_week1/demo
 │   │   └── exception/
 │   │       ├── CustomException.java
 │   │       └── GlobalExceptionHandler.java # 전역 예외 처리
-│   │
 │   ├── config/
-│   │   └── CorsConfig.java            
-│   │
+│   │   └── CorsConfig.java
 │   ├── exception/
 │   │   └── ErrorCode.java
-│   │
 │   └── security/
-│       ├── AuthMember.java                 # 인증된 사용자 정보 객체
+│       ├── AuthMember.java # 인증된 사용자 정보 객체
 │       ├── config/
-│       │   ├── SecurityConfig.java         # ✅ Security 필터체인 설정
+│       │   ├── SecurityConfig.java # ✅ Security 필터체인 설정
 │       │   └── JacksonConfig.java
 │       ├── handler/
-│       │   ├── JwtAuthenticationEntryPoint.java  # 401 처리
-│       │   └── JwtAccessDeniedHandler.java       # 403 처리
+│       │   ├── JwtAuthenticationEntryPoint.java # 401 처리
+│       │   └── JwtAccessDeniedHandler.java # 403 처리
 │       ├── jwt/
-│       │   ├── JwtTokenProvider.java             # ✅ 토큰 생성/검증
-│       │   ├── JwtAuthenticationFilter.java      # ✅ 요청마다 토큰 검사
-│       │   ├── JwtAuthenticationEntryPoint.java  # (handler와 중복 이름 - 확인 필요)
+│       │   ├── JwtTokenProvider.java # ✅ 토큰 생성/검증
+│       │   ├── JwtAuthenticationFilter.java # ✅ 요청마다 토큰 검사
+│       │   ├── JwtAuthenticationEntryPoint.java # (handler와 중복 이름 - 확인 필요)
 │       │   ├── JwtAuthExceptionResponseWriter.java
 │       │   └── JwtProperties.java
 │       └── userdetails/
 │           └── CustomUserDetails.java
-│
-├── member/                                 # 회원 도메인
+├── member/ # 회원 도메인
 │   ├── controller/MemberController.java
 │   ├── service/MemberService.java
 │   ├── repository/MemberRepository.java
 │   ├── entity/Member.java
 │   └── dto/
-│       ├── request/  (SignupRequest, LoginRequest, CreditChargeRequest)
+│       ├── request/ (SignupRequest, LoginRequest, CreditChargeRequest)
 │       └── response/ (LoginResponse, MemberInfo, CreditResponse, CreditChargeResponse)
-│
-├── menu/                                   # 메뉴 도메인
+├── menu/ # 메뉴 도메인
 │   ├── controller/MenuController.java
 │   ├── service/MenuService.java
 │   ├── repository/MenuRepository.java
 │   ├── entity/Menu.java
 │   └── dto/response/ (MenuListResponse, MenuDetailResponse, MenuSummaryResponse)
-│
-├── menuOption/                             # 메뉴 옵션 도메인
+├── menuOption/ # 메뉴 옵션 도메인
 │   ├── controller/MenuOptionController.java
 │   ├── service/MenuOptionService.java
 │   ├── repository/MenuOptionRepository.java
 │   ├── entity/MenuOption.java
 │   └── dto/
-│       ├── request/  (MenuOptionCreateRequest, MenuOptionUpdateRequest)
+│       ├── request/ (MenuOptionCreateRequest, MenuOptionUpdateRequest)
 │       └── response/ (MenuOptionResponse, MenuOptionDeleteResponse)
-│
-├── cart/                                   # 장바구니 도메인
+├── cart/ # 장바구니 도메인
 │   ├── controller/CartController.java
 │   ├── service/CartService.java
 │   ├── repository/ (CartRepository, CartItemRepository)
 │   ├── entity/ (Cart, CartItem, CartItemOption)
 │   └── dto/
-│       ├── request/  (CartItemAddRequest, CartItemUpdateRequest)
+│       ├── request/ (CartItemAddRequest, CartItemUpdateRequest)
 │       └── response/ (CartResponse, CartItemResponse, CartItemOptionResponse)
-│
-└── order/                                  # 주문 도메인
+└── order/ # 주문 도메인
     ├── controller/OrderController.java
     ├── service/OrderService.java
     ├── repository/ (OrderRepository, OrderItemRepository, OrderItemOptionRepository)
@@ -125,3 +116,4 @@ mutsa_vacation_week1/demo
     └── dto/
         ├── request/OrderRequest.java
         └── response/ (OrderResponse, OrderCancelResponse, OrderItemInfo, OrderOptionInfo, OrderStoreGroup)
+</code></pre>
