@@ -42,8 +42,8 @@ public class CartService {
         CartItem cartItem = new CartItem(menu, request.getQuantity());
         cart.addCartItem(cartItem);
 
-        if (request.getMenuOptionIds() != null) {
-            for (Long optionId : request.getMenuOptionIds()) {
+        if (request.getMenuOptionId() != null) {
+            for (Long optionId : request.getMenuOptionId()) {
                 MenuOption menuOption = menuOptionRepository.findById(optionId)
                         .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 옵션입니다."));
                 cartItem.addOption(new CartItemOption(menuOption));
@@ -70,9 +70,9 @@ public class CartService {
 
         cartItem.changeQuantity(request.getQuantity());
 
-        if (request.getMenuOptionIds() != null) {
+        if (request.getMenuOptionId() != null) {
             cartItem.clearOptions();
-            for (Long optionId : request.getMenuOptionIds()) {
+            for (Long optionId : request.getMenuOptionId()) {
                 MenuOption menuOption = menuOptionRepository.findById(optionId)
                         .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 옵션입니다."));
                 cartItem.addOption(new CartItemOption(menuOption));

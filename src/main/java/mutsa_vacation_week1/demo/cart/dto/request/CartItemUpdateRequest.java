@@ -9,5 +9,5 @@ import java.util.List;
 @NoArgsConstructor
 public class CartItemUpdateRequest {
     private int quantity;
-    private List<Long> menuOptionIds;
+    private List<Long> menuOptionId;
 }
