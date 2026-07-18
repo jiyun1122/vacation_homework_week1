@@ -1,0 +1,17 @@
+# 임시 로컬 테스트용 프로필 (RDS 없이 카카오 OAuth2 플로우 확인용)
+# 실행 시 --spring.profiles.active=local 또는 IntelliJ Active profiles에 local 지정
+# 테스트 끝나면 이 프로필을 사용하지 않으면 그대로 RDS(application.yml)로 돌아갑니다.
+spring:
+  datasource:
+    url: jdbc:h2:mem:demo;MODE=MySQL;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
