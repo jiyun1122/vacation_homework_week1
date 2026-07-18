@@ -3,6 +3,7 @@ package mutsa_vacation_week1.demo.member.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -112,8 +113,13 @@ public class MemberController {
                     content = @Content(mediaType = "application/json")),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "400",
-                    description = "CREDIT400_1 - 크레딧 잔액이 부족합니다",
-                    content = @Content(mediaType = "application/json"))
+                    description = "MEMBER400_1 - 크레딧 잔액이 부족합니다",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    value = "{\"success\": false, \"message\": \"크레딧 잔액이 부족합니다.\"}"
+                            )
+                    ))
     })
     @PostMapping("/members/credit/deduct")
     public ResponseEntity<ApiResponse<CreditDeductResponse>> deductCredit(
