@@ -9,13 +9,11 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import mutsa_vacation_week1.demo.global.apiPayload.ApiResponse;
 import mutsa_vacation_week1.demo.global.security.AuthMember;
+import mutsa_vacation_week1.demo.member.dto.request.CreditDeductRequest;
 import mutsa_vacation_week1.demo.member.dto.request.LoginRequest;
 import mutsa_vacation_week1.demo.member.dto.request.SignupRequest;
 import mutsa_vacation_week1.demo.member.dto.request.CreditChargeRequest;
-import mutsa_vacation_week1.demo.member.dto.response.CreditChargeResponse;
-import mutsa_vacation_week1.demo.member.dto.response.CreditResponse;
-import mutsa_vacation_week1.demo.member.dto.response.LoginResponse;
-import mutsa_vacation_week1.demo.member.dto.response.MemberInfo;
+import mutsa_vacation_week1.demo.member.dto.response.*;
 import mutsa_vacation_week1.demo.member.service.MemberService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -104,6 +102,28 @@ public class MemberController {
     public ResponseEntity<CreditResponse> getCredit(@AuthenticationPrincipal AuthMember authMember) {
         CreditResponse response = memberService.getCredit(authMember.memberId());
         return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "크레딧 차감", description = "결제 완료 시 크레딧을 차감합니다.")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "200",
+                    description = "크레딧 차감 성공",
+                    content = @Content(mediaType = "application/json")),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "400",
+                    description = "CREDIT400_1 - 크레딧 잔액이 부족합니다",
+                    content = @Content(mediaType = "application/json"))
+    })
+    @PostMapping("/members/credit/deduct")
+    public ResponseEntity<ApiResponse<CreditDeductResponse>> deductCredit(
+            @AuthenticationPrincipal AuthMember authMember,
+            @Valid @RequestBody CreditDeductRequest request
+    ) {
+        CreditDeductResponse result = memberService.deductCredit(authMember.memberId(), request);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ApiResponse.onSuccess("크레딧 차감 성공", result));
     }
 
 }

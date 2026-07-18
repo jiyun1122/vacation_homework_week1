@@ -10,5 +10,5 @@ import java.util.List;
 public class CartItemAddRequest {
     private Long menuId;
     private int quantity;
-    private List<Long> menuOptionIds;
+    private List<Long> menuOptionId;
 }

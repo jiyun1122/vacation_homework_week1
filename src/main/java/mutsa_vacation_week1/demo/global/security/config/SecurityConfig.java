@@ -50,6 +50,11 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/members/auth/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/menu", "/menu/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/stores", "/stores/**").permitAll()
+                        .requestMatchers(
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/v3/api-docs/**"
+                        ).permitAll()
                         .requestMatchers("/api/credit/**").authenticated()
                         .requestMatchers("/api/orders/**").authenticated()
                         .requestMatchers("/api/cart/**").authenticated()
