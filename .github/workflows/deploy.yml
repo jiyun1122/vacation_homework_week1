@@ -1,4 +1,4 @@
-name: Deploy to EC2
+name: Deploy to EC2 with Docker
 
 on:
   push:
@@ -18,28 +18,29 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
+      - name: Build with Gradle
+        run: |
+          chmod +x ./gradlew
+          ./gradlew clean build -x test
 
-      - name: Build with Gradle (skip tests)
-        run: ./gradlew build -x test
-
-      - name: Copy jar to EC2
-        uses: appleboy/scp-action@v0.1.7
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
         with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          source: "build/libs/demo-0.0.1-SNAPSHOT.jar"
-          target: "/home/ubuntu/vacation_homework_week1/build/libs/"
-          strip_components: 2
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Restart service on EC2
+      - name: Build and Push Docker Image
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/vacation-demo:latest .
+          docker push ${{ secrets.DOCKER_USERNAME }}/vacation-demo:latest
+
+      - name: Deploy to EC2
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            sudo systemctl restart demo
-            sudo systemctl status demo --no-pager
+            cd /home/ubuntu/app
+            docker compose pull
+            docker compose up -d
