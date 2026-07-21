@@ -60,6 +60,7 @@ public class CartService {
     }
 
     // 조회
+    @Transactional
     public CartResponse getCart(Long memberId) {
         Cart cart = cartRepository.findByMemberId(memberId)
                 .orElseThrow(() -> new CustomException(CartErrorCode.CART_NOT_FOUND)); // 수정
