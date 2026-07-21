@@ -8,6 +8,7 @@ import mutsa_vacation_week1.demo.member.dto.request.LoginRequest;
 import mutsa_vacation_week1.demo.member.dto.request.SignupRequest;
 import mutsa_vacation_week1.demo.member.dto.response.*;
 import mutsa_vacation_week1.demo.member.entity.Member;
+import mutsa_vacation_week1.demo.member.entity.Provider;
 import mutsa_vacation_week1.demo.member.repository.MemberRepository;
 import mutsa_vacation_week1.demo.global.security.jwt.JwtTokenProvider;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -59,6 +60,10 @@ public class MemberService {
         Member member = memberRepository.findByLoginId(request.getLoginId())
                 .orElseThrow(() -> new CustomException(MemberErrorCode.LOGIN_FAILED));
 
+        if (member.getProvider() != Provider.LOCAL || member.getPassword() == null) {
+            throw new CustomException(MemberErrorCode.SOCIAL_ACCOUNT_LOGIN_NOT_ALLOWED);
+        }
+
         if (!passwordEncoder.matches(request.getPassword(), member.getPassword())) {
             throw new CustomException(MemberErrorCode.LOGIN_FAILED);
         }
@@ -74,6 +79,16 @@ public class MemberService {
 
         return new LoginResponse(accessToken, "Bearer", memberInfo);
 
+    }
+
+    @Transactional
+    public Member loginOrSignUpKakaoMember(String providerId, String nickname) {
+        return memberRepository.findByProviderAndProviderId(Provider.KAKAO, providerId)
+                .orElseGet(() -> {
+                    Member saved = memberRepository.save(Member.ofKakao(providerId, nickname));
+                    cartRepository.save(new Cart(saved.getId()));
+                    return saved;
+                });
     }
 
     @Transactional(readOnly = true)
