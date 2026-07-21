@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import mutsa_vacation_week1.demo.global.apiPayload.ApiResponse;
 import mutsa_vacation_week1.demo.global.security.AuthMember;
 import mutsa_vacation_week1.demo.member.dto.request.CreditDeductRequest;
+import mutsa_vacation_week1.demo.member.dto.request.KakaoLoginRequest;
 import mutsa_vacation_week1.demo.member.dto.request.LoginRequest;
 import mutsa_vacation_week1.demo.member.dto.request.SignupRequest;
 import mutsa_vacation_week1.demo.member.dto.request.CreditChargeRequest;
@@ -68,6 +69,25 @@ public class MemberController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(ApiResponse.onSuccess("로그인 성공", result));
+    }
+
+    @Operation(summary = "카카오 로그인", description = "프론트에서 카카오로부터 직접 받은 인가코드로 로그인/회원가입을 처리합니다.")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "200",
+                    description = "카카오 로그인 성공",
+                    content = @Content(mediaType = "application/json")),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "400",
+                    description = "AUTH400_1 - 카카오 인가코드가 유효하지 않습니다",
+                    content = @Content(mediaType = "application/json"))
+    })
+    @PostMapping("/members/auth/kakao")
+    public ResponseEntity<ApiResponse<LoginResponse>> kakaoLogin(@Valid @RequestBody KakaoLoginRequest request) {
+        LoginResponse result = memberService.kakaoLogin(request.getCode());
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ApiResponse.onSuccess("카카오 로그인 성공", result));
     }
 
     @Operation(summary = "로그아웃", description = "로그아웃합니다.")
