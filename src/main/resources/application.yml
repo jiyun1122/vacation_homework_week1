@@ -45,7 +45,7 @@ app:
   oauth2:
     frontend-redirect-uri: ${FRONTEND_ALLOWED_REDIRECT_URIS:http://localhost:5173/oauth/callback}
     # 프론트가 카카오 인가 요청 시 실제로 사용한 redirect_uri와 정확히 일치해야 함 (카카오 토큰 교환 검증용)
-    kakao-redirect-uri: ${KAKAO_REDIRECT_URI:http://localhost:5173/oauth/callback}
+    kakao-redirect-uri: ${KAKAO_REDIRECT_URI:http://localhost:5173/auth/kakao/callback}
 
 server:
   port: 8080
