@@ -20,6 +20,8 @@ import mutsa_vacation_week1.demo.menuOption.entity.MenuOption;
 import mutsa_vacation_week1.demo.menuOption.repository.MenuOptionRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 
 @Service
 @RequiredArgsConstructor
@@ -37,21 +39,24 @@ public class CartService {
                 .orElseGet(() -> cartRepository.save(new Cart(memberId)));
 
         Menu menu = menuRepository.findById(request.getMenuId())
-                .orElseThrow(() -> new CustomException(CartErrorCode.MENU_NOT_FOUND)); // 수정
+                .orElseThrow(() -> new CustomException(CartErrorCode.MENU_NOT_FOUND));
 
         CartItem cartItem = new CartItem(menu, request.getQuantity());
-        cart.addCartItem(cartItem);
 
-        if (request.getMenuOptionId() != null) {
-            for (Long optionId : request.getMenuOptionId()) {
-                MenuOption menuOption = menuOptionRepository.findById(optionId)
-                        .orElseThrow(() -> new CustomException(CartErrorCode.MENU_OPTION_NOT_FOUND));
+        // 1. 옵션이 있는 경우 한번에 조회하여 추가 (N+1 방지 및 NPE 예방)
+        if (request.getMenuOptionId() != null && !request.getMenuOptionId().isEmpty()) {
+            List<MenuOption> menuOptions = menuOptionRepository.findAllById(request.getMenuOptionId());
+            for (MenuOption menuOption : menuOptions) {
                 cartItem.addOption(new CartItemOption(menuOption));
             }
         }
 
-        cartItemRepository.save(cartItem);
-        return CartItemResponse.from(cartItem);
+        // 2. 장바구니에 아이템 추가 (양방향 연결)
+        cart.addCartItem(cartItem);
+
+        // 3. 저장 및 응답 반환
+        CartItem savedCartItem = cartItemRepository.save(cartItem);
+        return CartItemResponse.from(savedCartItem);
     }
 
     // 조회

@@ -52,6 +52,9 @@ public class CartItem {
     }
 
     public void clearOptions() {
+        for (CartItemOption option : this.options) {
+            option.setCartItem(null);
+        }
         this.options.clear();
     }
 }
