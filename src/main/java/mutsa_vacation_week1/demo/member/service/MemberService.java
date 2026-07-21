@@ -3,12 +3,10 @@ package mutsa_vacation_week1.demo.member.service;
 import lombok.RequiredArgsConstructor;
 import mutsa_vacation_week1.demo.cart.entity.Cart;
 import mutsa_vacation_week1.demo.cart.repository.CartRepository;
+import mutsa_vacation_week1.demo.member.dto.request.CreditDeductRequest;
 import mutsa_vacation_week1.demo.member.dto.request.LoginRequest;
 import mutsa_vacation_week1.demo.member.dto.request.SignupRequest;
-import mutsa_vacation_week1.demo.member.dto.response.CreditChargeResponse;
-import mutsa_vacation_week1.demo.member.dto.response.CreditResponse;
-import mutsa_vacation_week1.demo.member.dto.response.LoginResponse;
-import mutsa_vacation_week1.demo.member.dto.response.MemberInfo;
+import mutsa_vacation_week1.demo.member.dto.response.*;
 import mutsa_vacation_week1.demo.member.entity.Member;
 import mutsa_vacation_week1.demo.member.entity.Provider;
 import mutsa_vacation_week1.demo.member.repository.MemberRepository;
@@ -138,5 +136,25 @@ public class MemberService {
         return memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(MemberErrorCode.MEMBER_NOT_FOUND));
     }
+
+    //credit 차감 로직
+
+    @Transactional
+    public CreditDeductResponse deductCredit(Long memberId, CreditDeductRequest request) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(MemberErrorCode.MEMBER_NOT_FOUND));
+
+        int creditBefore = member.getCredit();
+
+        member.deductCredit(request.getAmount()); // 내부에서 잔액부족 시 예외 던짐
+
+        return CreditDeductResponse.builder()
+                .memberId(member.getId())
+                .amount(request.getAmount())
+                .creditBefore(creditBefore)
+                .creditAfter(member.getCredit())
+                .build();
+    }
+
 
 }

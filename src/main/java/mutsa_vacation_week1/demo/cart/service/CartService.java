@@ -37,15 +37,15 @@ public class CartService {
                 .orElseGet(() -> cartRepository.save(new Cart(memberId)));
 
         Menu menu = menuRepository.findById(request.getMenuId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 메뉴입니다."));
+                .orElseThrow(() -> new CustomException(CartErrorCode.MENU_NOT_FOUND)); // 수정
 
         CartItem cartItem = new CartItem(menu, request.getQuantity());
         cart.addCartItem(cartItem);
 
-        if (request.getMenuOptionIds() != null) {
-            for (Long optionId : request.getMenuOptionIds()) {
+        if (request.getMenuOptionId() != null) {
+            for (Long optionId : request.getMenuOptionId()) {
                 MenuOption menuOption = menuOptionRepository.findById(optionId)
-                        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 옵션입니다."));
+                        .orElseThrow(() -> new CustomException(CartErrorCode.MENU_OPTION_NOT_FOUND));
                 cartItem.addOption(new CartItemOption(menuOption));
             }
         }
@@ -57,7 +57,7 @@ public class CartService {
     // 조회
     public CartResponse getCart(Long memberId) {
         Cart cart = cartRepository.findByMemberId(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("장바구니가 없습니다."));
+                .orElseThrow(() -> new CustomException(CartErrorCode.CART_NOT_FOUND)); // 수정
         return CartResponse.from(cart);
     }
 
@@ -65,16 +65,16 @@ public class CartService {
     @Transactional
     public CartItemResponse updateCartItem(Long memberId, Long cartItemId, CartItemUpdateRequest request) {
         CartItem cartItem = cartItemRepository.findById(cartItemId)
-                .orElseThrow(() -> new IllegalArgumentException("담긴 메뉴가 없습니다."));
+                .orElseThrow(() -> new CustomException(CartErrorCode.CART_ITEM_NOT_FOUND)); // 수정 (아래 참고)
         validateOwnership(cartItem, memberId);
 
         cartItem.changeQuantity(request.getQuantity());
 
-        if (request.getMenuOptionIds() != null) {
+        if (request.getMenuOptionId() != null) {
             cartItem.clearOptions();
-            for (Long optionId : request.getMenuOptionIds()) {
+            for (Long optionId : request.getMenuOptionId()) {
                 MenuOption menuOption = menuOptionRepository.findById(optionId)
-                        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 옵션입니다."));
+                        .orElseThrow(() -> new CustomException(CartErrorCode.MENU_OPTION_NOT_FOUND)); // 수정
                 cartItem.addOption(new CartItemOption(menuOption));
             }
         }
@@ -86,7 +86,7 @@ public class CartService {
     @Transactional
     public void deleteCartItem(Long memberId, Long cartItemId) {
         CartItem cartItem = cartItemRepository.findById(cartItemId)
-                .orElseThrow(() -> new IllegalArgumentException("담긴 메뉴가 없습니다."));
+                .orElseThrow(() -> new CustomException(CartErrorCode.CART_ITEM_NOT_FOUND)); // 수정
         validateOwnership(cartItem, memberId);
 
         cartItemRepository.deleteById(cartItemId);
@@ -98,3 +98,4 @@ public class CartService {
         }
     }
 }
+

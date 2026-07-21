@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import mutsa_vacation_week1.demo.global.apiPayload.code.MemberErrorCode;
+import mutsa_vacation_week1.demo.global.apiPayload.exception.CustomException;
 
 @Entity
 @Getter
@@ -58,6 +60,9 @@ public class Member {
     }
 
     public void deductCredit(int amount) {
+        if (this.credit < amount) {
+            throw new CustomException(MemberErrorCode.INSUFFICIENT_CREDIT);
+        }
         this.credit -= amount;
     }
 

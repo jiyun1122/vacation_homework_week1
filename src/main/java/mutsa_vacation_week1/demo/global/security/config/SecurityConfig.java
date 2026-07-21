@@ -56,7 +56,14 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/members/auth/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/menu", "/menu/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/stores", "/stores/**").permitAll()
-                        .requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll()
+                        .requestMatchers(
+                                "/oauth2/**",
+                                "/login/oauth2/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/v3/api-docs/**"
+                        ).permitAll()
+
                         .requestMatchers("/api/credit/**").authenticated()
                         .requestMatchers("/api/orders/**").authenticated()
                         .requestMatchers("/api/cart/**").authenticated()
@@ -82,7 +89,9 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(List.of(
                 "http://localhost:3000",
                 "http://localhost:5173",
-                "https://likelion-week7.vercel.app"
+                "https://likelion-week7.vercel.app",
+                "https://mutsa-vacation-team1.site",
+                "https://www.mutsa-vacation-team1.site"
         ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
