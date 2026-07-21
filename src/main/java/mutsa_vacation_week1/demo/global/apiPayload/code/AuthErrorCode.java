@@ -15,7 +15,9 @@ public enum AuthErrorCode implements BaseErrorCode {
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "AUTH401_3", "유효하지 않은 토큰입니다."),
     EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "AUTH401_4", "만료된 토큰입니다."),
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "AUTH401_5", "인증이 필요합니다."),
-    ACCESS_DENIED(HttpStatus.FORBIDDEN, "AUTH403_1", "접근 권한이 없습니다.");
+    ACCESS_DENIED(HttpStatus.FORBIDDEN, "AUTH403_1", "접근 권한이 없습니다."),
+    KAKAO_TOKEN_REQUEST_FAILED(HttpStatus.BAD_REQUEST, "AUTH400_1", "카카오 인가코드가 유효하지 않습니다."),
+    KAKAO_USERINFO_REQUEST_FAILED(HttpStatus.BAD_GATEWAY, "AUTH502_1", "카카오 사용자 정보를 가져오지 못했습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;

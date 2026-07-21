@@ -11,11 +11,14 @@ import mutsa_vacation_week1.demo.member.entity.Member;
 import mutsa_vacation_week1.demo.member.entity.Provider;
 import mutsa_vacation_week1.demo.member.repository.MemberRepository;
 import mutsa_vacation_week1.demo.global.security.jwt.JwtTokenProvider;
+import mutsa_vacation_week1.demo.global.security.oauth2.KakaoOAuthClient;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import mutsa_vacation_week1.demo.global.apiPayload.exception.CustomException;
 import mutsa_vacation_week1.demo.global.apiPayload.code.MemberErrorCode;
+
+import java.util.Map;
 
 
 @Service
@@ -26,6 +29,7 @@ public class MemberService {
     private final CartRepository cartRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final KakaoOAuthClient kakaoOAuthClient;
 
     @Transactional
     public MemberInfo signup(SignupRequest request) {
@@ -89,6 +93,34 @@ public class MemberService {
                     cartRepository.save(new Cart(saved.getId()));
                     return saved;
                 });
+    }
+
+    /**
+     * 프론트가 카카오로부터 직접 받은 인가코드를 넘겨주면, 백엔드가 카카오 서버와
+     * 통신해서 토큰 교환 및 사용자 조회까지 대신 처리하고 자체 JWT를 발급한다.
+     */
+    @Transactional
+    public LoginResponse kakaoLogin(String code) {
+        String kakaoAccessToken = kakaoOAuthClient.getAccessToken(code);
+        Map<String, Object> attributes = kakaoOAuthClient.getUserInfo(kakaoAccessToken);
+
+        String providerId = String.valueOf(attributes.get("id"));
+        @SuppressWarnings("unchecked")
+        Map<String, Object> properties = (Map<String, Object>) attributes.getOrDefault("properties", Map.of());
+        String nickname = (String) properties.getOrDefault("nickname", "카카오유저");
+
+        Member member = loginOrSignUpKakaoMember(providerId, nickname);
+
+        String accessToken = jwtTokenProvider.createAccessToken(member.getId(), member.getLoginId());
+
+        MemberInfo memberInfo = new MemberInfo(
+                member.getId(),
+                member.getLoginId(),
+                member.getName(),
+                member.getCredit()
+        );
+
+        return new LoginResponse(accessToken, "Bearer", memberInfo);
     }
 
     @Transactional(readOnly = true)
