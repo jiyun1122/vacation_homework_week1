@@ -75,7 +75,9 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(List.of(
                 "http://localhost:3000",
                 "http://localhost:5173",
-                "https://likelion-week7.vercel.app"
+                "https://likelion-week7.vercel.app",
+                "https://mutsa-vacation-team1.site",
+                "https://www.mutsa-vacation-team1.site"
         ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
