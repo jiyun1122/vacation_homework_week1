@@ -1,8 +1,15 @@
 package mutsa_vacation_week1.demo.global.apiPayload.exception;
 
+import mutsa_vacation_week1.demo.cart.entity.Cart;
+import mutsa_vacation_week1.demo.cart.repository.CartRepository;
 import mutsa_vacation_week1.demo.global.apiPayload.ApiResponse;
 import mutsa_vacation_week1.demo.global.apiPayload.code.BaseErrorCode;
+import mutsa_vacation_week1.demo.global.apiPayload.code.CartErrorCode;
 import mutsa_vacation_week1.demo.global.apiPayload.code.CommonErrorCode;
+import mutsa_vacation_week1.demo.menu.entity.Menu;
+import mutsa_vacation_week1.demo.menu.repository.MenuRepository;
+import mutsa_vacation_week1.demo.menuOption.entity.MenuOption;
+import mutsa_vacation_week1.demo.menuOption.repository.MenuOptionRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +29,7 @@ public class GlobalExceptionHandler {
                 .status(errorCode.getHttpStatus())
                 .body(ApiResponse.onFailure(errorCode.getMessage()));
     }
+
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Void>> handleException(Exception e) {
