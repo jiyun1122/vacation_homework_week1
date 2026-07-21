@@ -88,7 +88,7 @@ public class MemberController {
                 .body(ApiResponse.onSuccess("내 정보 조회 성공", result));
     }
 
-     // 크레딧 충전
+    // 크레딧 충전
     @PostMapping("/api/v1/members/me/credit/charge")
     public ResponseEntity<CreditChargeResponse> chargeCredit(
             @AuthenticationPrincipal AuthMember authMember,
@@ -110,15 +110,29 @@ public class MemberController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "200",
                     description = "크레딧 차감 성공",
-                    content = @Content(mediaType = "application/json")),
+                    content = @Content(
+                            mediaType = "application/json",
+                            // examples 속성에는 배열 형태({ @ExampleObject(...) })로 전달해야 Swagger UI에 정상 출력됩니다.
+                            examples = {
+                                    @ExampleObject(
+                                            name = "SuccessExample",
+                                            summary = "크레딧 차감 성공 예시",
+                                            value = "{\"isSuccess\": true, \"code\": \"COMMON200\", \"message\": \"크레딧 차감 성공\", \"result\": {\"memberId\": 1, \"amount\": 10000, \"creditBefore\": 20000, \"creditAfter\": 10000}}"
+                                    )
+                            }
+                    )),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "400",
                     description = "MEMBER400_1 - 크레딧 잔액이 부족합니다",
                     content = @Content(
                             mediaType = "application/json",
-                            examples = @ExampleObject(
-                                    value = "{\"success\": false, \"message\": \"크레딧 잔액이 부족합니다.\"}"
-                            )
+                            examples = {
+                                    @ExampleObject(
+                                            name = "ErrorExample",
+                                            summary = "잔액 부족 예시",
+                                            value = "{\"isSuccess\": false, \"code\": \"MEMBER400_1\", \"message\": \"크레딧 잔액이 부족합니다.\", \"result\": null}"
+                                    )
+                            }
                     ))
     })
     @PostMapping("/members/credit/deduct")
@@ -131,5 +145,5 @@ public class MemberController {
                 .status(HttpStatus.OK)
                 .body(ApiResponse.onSuccess("크레딧 차감 성공", result));
     }
-
 }
+
