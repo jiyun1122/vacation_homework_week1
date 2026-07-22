@@ -49,3 +49,6 @@ app:
 
 server:
   port: 8080
+  # Nginx가 https -> http(8080)로 프록시하는데 Spring이 이를 신뢰하지 않아
+  # 자기 자신의 baseUrl을 http로 인식하던 문제 수정 (Swagger server url, OAuth2 redirect_uri 등에 영향)
+  forward-headers-strategy: framework
